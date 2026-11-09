@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FTC Robot Viewer</title>
-  <!-- Load Google Model Viewer library -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
   <style>
     body, html {
@@ -36,26 +35,24 @@
     shadow-intensity="0"
     orientation="0deg 270deg 0deg"
     environment-image="neutral"
-    exposure="1.2">
+    exposure="1.2"
+    power-preference="high-performance"
+    render-scale="0.5">
   </model-viewer>
 
   <script>
     const viewer = document.getElementById('robotViewer');
 
     viewer.addEventListener('load', () => {
-      const material = viewer.model.materials;
-      
-      // Loop through materials and assign custom shades of blue and green
-      material.forEach((mat, index) => {
+      const materials = viewer.model.materials;
+      materials.forEach((mat, index) => {
         const baseColor = mat.pbrMetallicRoughness;
-        
-        // Alternates between cyan, royal blue, mint green, and forest green based on part index
         if (index % 4 === 0) {
           baseColor.setBaseColorFactor([0.1, 0.8, 0.4, 1.0]); // Mint Green
         } else if (index % 4 === 1) {
           baseColor.setBaseColorFactor([0.0, 0.4, 0.9, 1.0]); // Royal Blue
         } else if (index % 4 === 2) {
-          baseColor.setBaseColorFactor([0.2, 0.9, 0.9, 1.0]); // Cyan / Teal
+          baseColor.setBaseColorFactor([0.2, 0.9, 0.9, 1.0]); // Cyan
         } else {
           baseColor.setBaseColorFactor([0.1, 0.6, 0.2, 1.0]); // Forest Green
         }
