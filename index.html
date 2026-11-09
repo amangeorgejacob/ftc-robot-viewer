@@ -13,23 +13,51 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: #111827; /* Dark background so you can instantly see if it loads */
+      background-color: #111827;
+      font-family: system-ui, sans-serif;
     }
     model-viewer {
       width: 100%;
       height: 100%;
     }
+    #error-box {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      color: #ff6b6b;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 100;
+    }
   </style>
 </head>
 <body>
 
+  <div id="error-box"></div>
+
   <model-viewer 
+    id="robotViewer"
     src="robot.glb" 
     alt="3D Model of FTC Robot"
     auto-rotate 
     camera-controls 
     shadow-intensity="1">
   </model-viewer>
+
+  <script>
+    const viewer = document.getElementById('robotViewer');
+    const errorBox = document.getElementById('error-box');
+
+    viewer.addEventListener('error', (event) => {
+      console.error(event);
+      errorBox.style.display = 'block';
+      errorBox.innerHTML = `<strong>Failed to load robot.glb</strong><br>Check if your file is named exactly <code>robot.glb</code> (lowercase) and is in the same folder as index.html.`;
+    });
+  </script>
 
 </body>
 </html>
