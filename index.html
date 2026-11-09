@@ -13,12 +13,13 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: transparent;
+      background: transparent;
     }
     model-viewer {
       width: 100%;
       height: 100%;
-      /* Removes all color and makes materials uniform silver/gray */
+      background-color: transparent;
+      /* Keeps your monochrome/silver style */
       filter: grayscale(100%) brightness(1.1) contrast(1.1);
     }
   </style>
@@ -31,7 +32,6 @@
     auto-rotate 
     camera-controls 
     shadow-intensity="1"
-    /* Rotates the model 90 degrees around the Y axis */
     orientation="0deg 90deg 0deg">
   </model-viewer>
 
