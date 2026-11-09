@@ -22,24 +22,27 @@
       background-color: transparent;
     }
 
-    /* Custom Centered Loading Overlay Styling */
-    .custom-loader {
+    /* Loading Overlay Styling */
+    #loading-overlay {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(17, 24, 39, 0.4); /* Subtle dim backdrop */
+      z-index: 10;
+      transition: opacity 0.3s ease;
     }
 
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #3b82f6; /* Bright blue spinning ring */
+      width: 45px;
+      height: 45px;
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #3b82f6;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin-bottom: 12px;
@@ -48,9 +51,9 @@
     .loading-text {
       color: #ffffff;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       letter-spacing: 0.5px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
 
     @keyframes spin {
@@ -59,6 +62,12 @@
   </style>
 </head>
 <body>
+
+  <!-- Custom External Loading Screen -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Robot Loading...</div>
+  </div>
 
   <model-viewer 
     id="robotViewer"
@@ -70,22 +79,33 @@
     orientation="0deg 270deg 0deg"
     environment-image="neutral"
     exposure="1.2"
-    interpolation-decay="200"
-    min-field-of-view="10deg"
-    min-camera-orbit="auto auto 70%"
-    max-camera-orbit="auto auto 200%">
-
-    <!-- Custom Loading Slot -->
-    <div slot="progress-bar" class="custom-loader">
-      <div class="spinner"></div>
-      <div class="loading-text">Robot Loading...</div>
-    </div>
-
+    /* HARD ZOOM LIMITS (Min = Zoom In limit, Max = Zoom Out limit) */
+    min-field-of-view="15deg"
+    max-field-of-view="45deg"
+    field-of-view="30deg">
   </model-viewer>
 
   <script>
-    const viewer = document.getElementById('robotViewer');
+    // Force 100% full resolution on big high-DPI desktop monitors (eliminates blur)
+    const ModelViewerElement = customElements.get('model-viewer');
+    if (ModelViewerElement) {
+      ModelViewerElement.minimumRenderScale = 1;
+    }
 
+    const viewer = document.getElementById('robotViewer');
+    const loader = document.getElementById('loading-overlay');
+
+    // HIDE LOADING SCREEN THE EXACT SECOND ROBOT IS VISIBLE
+    viewer.addEventListener('model-visibility', (event) => {
+      if (event.detail.visible) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 300);
+      }
+    });
+
+    // Apply color materials on load
     viewer.addEventListener('load', () => {
       const materials = viewer.model.materials;
       materials.forEach((mat, index) => {
