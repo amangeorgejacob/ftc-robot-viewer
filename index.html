@@ -10,123 +10,26 @@
     body, html {
       margin: 0;
       padding: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      background: transparent;
-      font-family: system-ui, -apple-system, sans-serif;
+      background-color: transparent;
     }
     model-viewer {
       width: 100%;
       height: 100%;
-      background-color: transparent;
-    }
-
-    /* Force-hide any default top loading progress bars */
-    model-viewer::part(default-progress-bar) {
-      display: none !important;
-    }
-
-    /* Completely transparent loading overlay (Zero dark tint) */
-    #loading-overlay {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent; 
-      pointer-events: none;
-      z-index: 10;
-      transition: opacity 0.3s ease;
-    }
-
-    .spinner {
-      width: 45px;
-      height: 45px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 12px;
-    }
-
-    .loading-text {
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 15px;
-      letter-spacing: 0.5px;
-      /* Strong shadow keeps text legible on any Wix background without needing a dark box tint */
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Completely transparent loading overlay -->
-  <div id="loading-overlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Robot Loading...</div>
-  </div>
-
   <model-viewer 
-    id="robotViewer"
     src="robot.glb" 
     alt="3D Model of FTC Robot"
     auto-rotate 
     camera-controls 
-    shadow-intensity="0"
-    orientation="0deg 270deg 0deg"
-    environment-image="neutral"
-    exposure="1.2"
-    min-field-of-view="15deg"
-    max-field-of-view="45deg"
-    field-of-view="30deg">
+    shadow-intensity="1">
   </model-viewer>
-
-  <script>
-    const ModelViewerElement = customElements.get('model-viewer');
-    if (ModelViewerElement) {
-      ModelViewerElement.minimumRenderScale = 1;
-    }
-
-    const viewer = document.getElementById('robotViewer');
-    const loader = document.getElementById('loading-overlay');
-
-    // Hides loading screen the exact second the robot is visible
-    viewer.addEventListener('model-visibility', (event) => {
-      if (event.detail.visible) {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-          loader.style.display = 'none';
-        }, 300);
-      }
-    });
-
-    // Apply color materials on load
-    viewer.addEventListener('load', () => {
-      const materials = viewer.model.materials;
-      materials.forEach((mat, index) => {
-        const baseColor = mat.pbrMetallicRoughness;
-        if (index % 4 === 0) {
-          baseColor.setBaseColorFactor([0.1, 0.8, 0.4, 1.0]); // Mint Green
-        } else if (index % 4 === 1) {
-          baseColor.setBaseColorFactor([0.0, 0.4, 0.9, 1.0]); // Royal Blue
-        } else if (index % 4 === 2) {
-          baseColor.setBaseColorFactor([0.2, 0.9, 0.9, 1.0]); // Cyan
-        } else {
-          baseColor.setBaseColorFactor([0.1, 0.6, 0.2, 1.0]); // Forest Green
-        }
-      });
-    });
-  </script>
 
 </body>
 </html>
