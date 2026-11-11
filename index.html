@@ -12,8 +12,7 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      /* Rich dark green and deep blue gradient background */
-      background: linear-gradient(135deg, #0b2e1d, #091a28);
+      background: transparent;
     }
     model-viewer {
       width: 100%;
@@ -36,5 +35,21 @@
     disable-pan 
     orientation="0deg 270deg 0deg">
   </model-viewer>
+
+  <script>
+    // Automatically tint the robot's materials with darker shades of green and blue upon loading
+    const modelViewer = document.querySelector('#robotViewer');
+    modelViewer.addEventListener('load', () => {
+      const materials = modelViewer.model.materials;
+      materials.forEach((material, index) => {
+        // Alternate between deep dark green and rich dark blue shades
+        if (index % 2 === 0) {
+          material.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.32, 0.22, 1.0]); // Dark Green
+        } else {
+          material.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.18, 0.4, 1.0]);  // Dark Blue
+        }
+      });
+    });
+  </script>
 </body>
 </html>
